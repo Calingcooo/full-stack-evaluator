@@ -17,7 +17,7 @@ const Login = () => {
 
         {currentView === "signin" && <SignIn setCurrentView={setCurrentView} />}
 
-        {currentView === "signup" && <SignUp />}
+        {currentView === "signup" && <SignUp setCurrentView={setCurrentView} />}
 
         {currentView === "forgotPass" && <ForgotPassword />}
 

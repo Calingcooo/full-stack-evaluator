@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import { Mail, Lock, EyeOff, Eye } from "lucide-react";
+import { useAuth } from "../../context/AuthContext";
 
 const Signin = ({ setCurrentView }) => {
+  const { handleLogin } = useAuth()
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -9,12 +11,11 @@ const Signin = ({ setCurrentView }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setIsLoading(true);
-
-    // Simulate API call
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 1500);
+    try {
+      
+    } catch (error) {
+      
+    }
   };
 
   return (

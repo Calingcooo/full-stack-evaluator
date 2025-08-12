@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import { Mail, Lock, EyeOff, Eye } from "lucide-react";
+import { useAuth } from "../../context/AuthContext";
+import api from "../../api/axios";
 
-const SignUp = ({ onBack, onSignUp }) => {
+const SignUp = ({ setCurrentView }) => {
+  const { handleSignup } = useAuth()
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [formData, setFormData] = useState({
-    fullName: "",
     email: "",
     password: "",
     confirmPassword: "",
@@ -17,22 +19,6 @@ const SignUp = ({ onBack, onSignUp }) => {
       ...formData,
       [e.target.name]: e.target.value,
     });
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (formData.password !== formData.confirmPassword) {
-      alert("Passwords do not match!");
-      return;
-    }
-
-    setIsLoading(true);
-
-    // Simulate API call
-    setTimeout(() => {
-      setIsLoading(false);
-      onSignUp();
-    }, 1500);
   };
 
   return (
@@ -128,7 +114,7 @@ const SignUp = ({ onBack, onSignUp }) => {
       </div>
 
       <button
-        onClick={handleSubmit}
+        onClick={(e) => handleSignup(e, formData, setIsLoading, setCurrentView)}
         disabled={isLoading}
         className="w-full py-3 px-4 bg-gradient-to-r from-green-500 to-blue-600 text-white font-semibold rounded-lg shadow-lg hover:from-green-600 hover:to-blue-700 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-offset-2 focus:ring-offset-transparent transition-all duration-300 transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
       >

@@ -1,4 +1,5 @@
 import { createContext, useState, useContext } from "react";
+import api from "../api/axios";
 
 export const AuthContext = createContext(undefined);
 
@@ -7,10 +8,33 @@ export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [authError, setAuthError] = useState(false);
 
+  const handleSignup = async (e, formData, setIsLoading, setCurrentView) => {
+    e.preventDefault();
+    setIsLoading(true);
+    const { email, password, confirmPassword } = formData;
+    if (password !== confirmPassword) {
+      alert("Passwords do not match!");
+      setIsLoading(false);
+      return;
+    }
+
+    try {
+      const { data } = api.post("users", { email, password });
+
+      alert("Account created successfully!");
+      setCurrentView("signin");
+      setAuthError(false);
+    } catch (error) {
+      console.error(error);
+      setAuthError(true);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <AuthContext.Provider
-      value={{ user, isAuthenticated, authError }}
+      value={{ user, isAuthenticated, authError, handleSignup }}
     >
       {children}
     </AuthContext.Provider>
