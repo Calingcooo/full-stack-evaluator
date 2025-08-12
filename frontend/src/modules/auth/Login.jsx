@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { User, Mail, Lock, EyeOff, Eye } from "lucide-react";
 
-const LoginForm = () => {
+const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -14,7 +14,6 @@ const LoginForm = () => {
     // Simulate API call
     setTimeout(() => {
       setIsLoading(false);
-      onLogin();
     }, 1500);
   };
 
@@ -120,4 +119,4 @@ const LoginForm = () => {
   );
 };
 
-export default LoginForm;
+export default Login;
