@@ -13,8 +13,16 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-var app = builder.Build();
+builder.Services.AddCors(options => {
+    options.AddPolicy(name: "TaskManager", policy => {
+        policy
+            .WithOrigins("http://localhost:5173")
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
 
+var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
@@ -22,8 +30,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseCors("TaskManager");
 app.UseHttpsRedirection();
 app.MapControllers();
 
 app.Run();
-
