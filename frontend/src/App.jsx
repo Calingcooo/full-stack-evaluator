@@ -2,6 +2,7 @@ import { createBrowserRouter, RouterProvider } from "react-router";
 import { AuthProvider } from "./context/AuthContext";
 import AuthGuard from "./guards/AuthGuard";
 import Login from "./modules/auth/Login";
+import Dashboard from "./modules/task_dashboard/Dashboard"
 
 const router = createBrowserRouter([
   {
@@ -15,6 +16,10 @@ const router = createBrowserRouter([
       {
         index: true,
         element: <Login />,
+      },
+      {
+        path: "dashboard",
+        element: <Dashboard />,
       },
     ],
   },
