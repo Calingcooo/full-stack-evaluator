@@ -2,6 +2,22 @@ import React from "react";
 import { User, Mail, Lock, EyeOff, Eye } from "lucide-react";
 
 const LoginForm = () => {
+  const [showPassword, setShowPassword] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsLoading(true);
+    
+    // Simulate API call
+    setTimeout(() => {
+      setIsLoading(false);
+      onLogin();
+    }, 1500);
+  };
+
   return (
     <div className="w-full max-w-md">
       <div className="bg-white/10 backdrop-blur-md rounded-2xl p-8 shadow-2xl border border-white/20">
