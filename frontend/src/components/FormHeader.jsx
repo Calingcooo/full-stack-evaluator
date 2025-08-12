@@ -13,7 +13,7 @@ const viewData = {
     backLabel: "Create Account",
   },
   forgotPass: {
-    subtitle: "Enter your email and we'll send you a reset link",
+    subtitle: "",
     showBack: true,
     backTo: "signin",
     backLabel: "Forgot Password",

@@ -1,14 +1,14 @@
-import React, { useState } from 'react'
+import React, { useState } from "react";
+import { Mail } from "lucide-react";
 
-const ForgotPassword = () => {
-  const [email, setEmail] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const [isEmailSent, setIsEmailSent] = useState(false);
+const ForgotPassword = ({ onBack }) => {
   return (
-    <div>
-      
+    <div className="space-y-6">
+      <h1 className="text-center text-white text-xl font-medium">
+        This feature is not ready.
+      </h1>
     </div>
-  )
-}
+  );
+};
 
-export default ForgotPassword
+export default ForgotPassword;
