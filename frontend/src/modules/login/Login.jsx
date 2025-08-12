@@ -20,15 +20,7 @@ const Login = () => {
   return (
     <div className="min-w-svw min-h-svh flex flex-col justify-center items-center px-5 md:px-0">
       <div className="flex flex-col w-full md:max-w-[30%] bg-white/10 backdrop-blur-md rounded-2xl p-8 shadow-2xl border border-white/20">
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-white mb-4 flex items-center justify-center gap-3">
-            📝{" "}
-            <span className="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
-              Task Evaluator
-            </span>
-          </h1>
-          <p className="text-white/70">Sign in to access your tasks</p>
-        </div>
+        
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-1">
