@@ -1,24 +1,36 @@
-import { useEffect, useState } from 'react';
-import api from "./api/axios"
+import { useEffect, useState } from "react";
+import api from "./api/axios";
 
 function Tasks() {
   const [tasks, setTasks] = useState([]);
 
+  const handleFetchTasks = async () => {
+    try {
+      const { data } = await api.get("/tasks");
+
+      setTasks(data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   useEffect(() => {
-    api.get('/tasks')
-      .then(res => setTasks(res.data))
-      .catch(err => console.error(err));
+    handleFetchTasks();
   }, []);
 
   return (
     <div>
       <h2>Tasks</h2>
       <ul>
-        {tasks.map(task => (
-          <li key={task.id}>
-            {task.title} {task.isDone ? '✅' : '❌'}
-          </li>
-        ))}
+        {tasks.length > 0 ? (
+          tasks.map((task) => (
+            <li key={task.id}>
+              {task.title} {task.isDone ? "✅" : "❌"}
+            </li>
+          ))
+        ) : (
+          <p>No tasks</p>
+        )}
       </ul>
     </div>
   );
