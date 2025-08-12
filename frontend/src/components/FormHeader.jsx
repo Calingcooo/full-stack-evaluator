@@ -1,18 +1,39 @@
 import React from "react";
 import { ArrowLeft } from "lucide-react";
 
-const FormHeader = ({ arrowAction, view }) => {
+const viewData = {
+  signin: {
+    subtitle: "Sign in to access your tasks",
+    showBack: false,
+  },
+  signup: {
+    subtitle: "Join us to start managing your tasks",
+    showBack: true,
+    backTo: "signin",
+    backLabel: "Create Account",
+  },
+  forgotPass: {
+    subtitle: "Enter your email and we'll send you a reset link",
+    showBack: true,
+    backTo: "signin",
+    backLabel: "Forgot Password",
+  },
+};
+
+const FormHeader = ({ currentView, setCurrentView }) => {
+  const { subtitle, showBack, backTo, backLabel } = viewData[currentView] || {};
+
   return (
     <div className="text-center mb-8">
-      {view === "signup" && (
+      {showBack && (
         <div className="flex items-center mb-6">
           <button
-            onClick={arrowAction}
-            className="mr-4 p-2 text-white/70 hover:text-white hover:bg-white/10 rounded-lg transition-all duration-300"
+            onClick={() => setCurrentView(backTo)}
+            className="mr-4 p-2 text-white/70 hover:text-white hover:bg-white/10 rounded-lg cursor-pointer transition-all duration-300"
           >
             <ArrowLeft className="w-5 h-5" />
           </button>
-          <h2 className="text-2xl font-bold text-white">Create Account</h2>
+          <h2 className="text-2xl font-bold text-white">{backLabel}</h2>
         </div>
       )}
 
@@ -23,11 +44,7 @@ const FormHeader = ({ arrowAction, view }) => {
         </span>
       </h1>
 
-      <p className="text-white/70">
-        {view === "signin" && "Sign in to access your tasks"}
-        {view === "signup" && "Join us to start managing your tasks"}
-        {view === "forgotPass" && "Sign in to access your tasks"}
-      </p>
+      {subtitle && <p className="text-white/70">{subtitle}</p>}
     </div>
   );
 };

@@ -12,9 +12,9 @@ const viewTexts = {
     nextView: "signin",
   },
   forgotPass: {
-    message: "",
-    action: "",
-    nextView: null,
+    message: "Remember your password?",
+    action: "Sign in",
+    nextView: "signin",
   },
 };
 
@@ -22,10 +22,10 @@ const FormFooter = ({ currentView, setCurrentView }) => {
   const { message, action, nextView } = viewTexts[currentView] || {};
 
   const handleClick = () => {
-    if (currentView === "forgotPass") {
-      console.log("forgot password");
-      return;
-    }
+    // if (currentView === "forgotPass") {
+    //   console.log("forgot password");
+    //   return;
+    // }
     if (nextView) setCurrentView(nextView);
   };
 

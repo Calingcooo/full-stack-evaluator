@@ -64,8 +64,8 @@ const Signin = ({ setCurrentView }) => {
 
       <div className="flex items-center justify-start text-sm">
         <a
-          href="#"
-          className="text-blue-400 hover:text-blue-300 transition-colors hover:underline underline-offset-2"
+          onClick={() => setCurrentView("forgotPass")}
+          className="text-blue-400 hover:text-blue-300 transition-colors hover:underline underline-offset-2 cursor-pointer"
         >
           Forgot password?
         </a>
