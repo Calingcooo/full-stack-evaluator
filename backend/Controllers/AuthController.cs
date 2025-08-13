@@ -48,7 +48,7 @@ namespace TaskManager.API
         // }
 
         [HttpPost("signup")]
-        public async Task<IActionResult> CreateUser([FromBody] CreateUserDto userDto)
+        public async Task<IActionResult> CreateUser([FromBody] RegisterRequest userDto)
         {
             // Check if email exists
             if (await _context.Users.AnyAsync(u => u.Email == userDto.Email))
