@@ -10,7 +10,7 @@ using TaskManager.Services;
 
 namespace TaskManager.API
 {
-    [Route("auth/[controller]")]
+    [Route("auth")]
     [ApiController]
 
     public class AuthController : ControllerBase
@@ -42,6 +42,7 @@ namespace TaskManager.API
             };
 
             // Save to database
+            _context.Users.Add(user);
             await _context.SaveChangesAsync();
 
             return Ok(new { message = "User created successfully", userId = user.Id });
