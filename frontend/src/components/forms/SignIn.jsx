@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import { User, Mail, Lock, EyeOff, Eye } from "lucide-react";
+import { Mail, Lock, EyeOff, Eye } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 
 const Signin = ({ setCurrentView }) => {
-  const { handleSignin } = useAuth();
+  const { authError, handleSignin } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -23,7 +23,7 @@ const Signin = ({ setCurrentView }) => {
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-300"
+            className={`w-full pl-10 pr-4 py-3 bg-white/5 border rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-300 ${authError ? "border-red-500 focus:ring-red-500 focus:border-red-500" : "focus:outline-none border-white/20 focus:ring-2 focus:ring-blue-400 focus:border-transparent"}`}
             placeholder="Enter your email"
             required
           />
@@ -40,7 +40,7 @@ const Signin = ({ setCurrentView }) => {
             type={showPassword ? "text" : "password"}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full pl-10 pr-12 py-3 bg-white/5 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-300"
+            className={`w-full pl-10 pr-4 py-3 bg-white/5 border rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-300 ${authError ? "border-red-500 focus:ring-red-500 focus:border-red-500" : "focus:outline-none border-white/20 focus:ring-2 focus:ring-blue-400 focus:border-transparent"}`}
             placeholder="Enter your password"
             required
           />
@@ -58,7 +58,11 @@ const Signin = ({ setCurrentView }) => {
         </div>
       </div>
 
-      <div className="flex items-center justify-start text-sm">
+      <div className={`flex items-center text-sm ${authError ? "justify-between" : "justify-end"}`}>
+        {authError && (
+          <p className="text-red-500">Invalid email or password</p>
+        )}
+
         <a
           onClick={() => setCurrentView("forgotPass")}
           className="text-blue-400 hover:text-blue-300 transition-colors hover:underline underline-offset-2 cursor-pointer"

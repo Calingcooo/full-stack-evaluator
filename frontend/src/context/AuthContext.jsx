@@ -6,11 +6,12 @@ export const AuthContext = createContext(undefined);
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [authError, setAuthError] = useState(false);
+  const [authError, setAuthError] = useState(true);
 
   const handleSignin = async (e, formData, setIsLoading) => {
     e.preventDefault();
     setIsLoading(true);
+    setAuthError(false)
     const { email, password } = formData;
     if (email.trim() === "" || password.trim() === "") {
       alert("Email and password field is required");
@@ -21,8 +22,11 @@ export const AuthProvider = ({ children }) => {
       const { data } = await api.post("/auth/signin", { email, password });
 
       console.log(data);
+      alert("logged in success!")
+      setAuthError(false)
     } catch (error) {
       console.error(error);
+      setAuthError(true)
     } finally {
       setIsLoading(false);
     }
@@ -42,6 +46,7 @@ export const AuthProvider = ({ children }) => {
       const { data } = await api.post("/auth/signup", { name, email, password });
 
       alert("Account created successfully!");
+      console.log(data)
       setCurrentView("signin");
       setAuthError(false);
     } catch (error) {
