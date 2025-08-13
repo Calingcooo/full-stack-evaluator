@@ -3,23 +3,14 @@ import { Mail, Lock, EyeOff, Eye } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 
 const Signin = ({ setCurrentView }) => {
-  const { handleLogin } = useAuth()
+  const { handleSignin } = useAuth()
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      
-    } catch (error) {
-      
-    }
-  };
-
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
+    <form onSubmit={(e) => handleSignin(e, {email, password}, setIsLoading)} className="space-y-6">
       <div className="space-y-1">
         <label className="text-white/90 text-sm font-medium block">Email</label>
         <div className="relative">
