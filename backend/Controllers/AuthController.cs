@@ -2,13 +2,11 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
 
 using TaskManager.Models;
+using TaskManager.Models.DTOs;
 using TaskManager.Data;
-using TaskManager.DTOs;
+using TaskManager.Services;
 
 namespace TaskManager.API
 {
@@ -18,34 +16,13 @@ namespace TaskManager.API
     public class AuthController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
+        private readonly IAuthService _authService;
 
-        public AuthController(ApplicationDbContext context) 
+        public AuthController(ApplicationDbContext context, IAuthService authService) 
         {
             _context = context;
+            _authService = authService;
         }
-
-        // [HttpPost("signin")]
-        // public async Task<IActionResult> LoginUser([FromBody] CreateUserDto userDto)
-        // {
-        //     var user = await _context.Users
-        //         .FirstOrDefaultAsync(u => u.Email == userDto.Email);
-
-        //     if (user == null)
-        //     {
-        //       return Unauthorized(new { message = "Invalid email or password" });
-        //     }
-
-        //     var hasher = new PasswordHasher<User>();
-        //     var result = hasher.VerifyHashedPassword(user, user.PasswordHash, userDto.Password);
-
-        //     if (result == PasswordVerificationResult.Success)
-        //     {
-        //       var token = _jwtService.GenerateToken(user);
-        //       return Ok(new { token  });
-        //     }
-            
-        //     return Unauthorized("Invalid email or password.");
-        // }
 
         [HttpPost("signup")]
         public async Task<IActionResult> CreateUser([FromBody] RegisterRequest userDto)
@@ -59,29 +36,28 @@ namespace TaskManager.API
             // Create User model from DTO
             var user = new User
             {
+                Name = userDto.Name,
                 Email = userDto.Email,
+                PasswordHash = _authService.HashPassword(userDto.Password)
             };
 
-            // Hash the password and add to the user object
-            var hasher = new PasswordHasher<User>();
-            user.PasswordHash = hasher.HashPassword(user, userDto.Password);
-
             // Save to database
-            _context.Users.Add(user);
             await _context.SaveChangesAsync();
 
             return Ok(new { message = "User created successfully", userId = user.Id });
         }
 
-         private string HashPassword(string password)
+        [HttpPost("signin")]
+        public async Task<IActionResult> LoginUser([FromBody] LoginRequest loginDto)
         {
-            using (var sha256 = SHA256.Create())
+            var user = await _authService.ValidateUser(loginDto.Email, loginDto.Password);
+
+            if (user == null)
             {
-                var hashedBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(password));
-                return BitConverter.ToString(hashedBytes).Replace("-", "").ToLower();
+                return Unauthorized(new { message = "Invalid email or password" });
             }
+
+            return Ok(new { message = "Login successful", userId = user.Id });
         }
     }
-
-
 }
