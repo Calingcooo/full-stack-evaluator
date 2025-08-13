@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Logging;
 
 using TaskManager.Models;
 using TaskManager.Models.DTOs;
@@ -17,18 +18,22 @@ namespace TaskManager.API
     {
         private readonly ApplicationDbContext _context;
         private readonly IAuthService _authService;
+        private readonly ILogger<AuthController> _logger;
 
-        public AuthController(ApplicationDbContext context, IAuthService authService) 
+        public AuthController(ApplicationDbContext context, IAuthService authService, ILogger<AuthController> logger) 
         {
             _context = context;
             _authService = authService;
+            _logger = logger;
         }
 
         [HttpPost("signup")]
-        public async Task<IActionResult> CreateUser([FromBody] RegisterRequest userDto)
+        public async Task<IActionResult> CreateUser([FromBody] RegisterRequest request)
         {
+            _logger.LogInformation("Registering new user: {Name}, {Email}", request.Name, request.Email);
+
             // Check if email exists
-            if (await _context.Users.AnyAsync(u => u.Email == userDto.Email))
+            if (await _context.Users.AnyAsync(u => u.Email == request.Email))
             {
                 return BadRequest(new { message = "Email already exists" });
             }
@@ -36,9 +41,9 @@ namespace TaskManager.API
             // Create User model from DTO
             var user = new User
             {
-                Name = userDto.Name,
-                Email = userDto.Email,
-                PasswordHash = _authService.HashPassword(userDto.Password)
+                Name = request.Name,
+                Email = request.Email,
+                PasswordHash = _authService.HashPassword(request.Password)
             };
 
             // Save to database
