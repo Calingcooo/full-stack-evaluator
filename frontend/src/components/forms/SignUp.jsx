@@ -1,13 +1,13 @@
 import React, { useState } from "react";
-import { Mail, Lock, EyeOff, Eye } from "lucide-react";
+import { User, Mail, Lock, EyeOff, Eye } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
-import api from "../../api/axios";
 
 const SignUp = ({ setCurrentView }) => {
-  const { handleSignup } = useAuth()
+  const { handleSignup } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [formData, setFormData] = useState({
+    name: "",
     email: "",
     password: "",
     confirmPassword: "",
@@ -23,6 +23,24 @@ const SignUp = ({ setCurrentView }) => {
 
   return (
     <div className="space-y-6">
+      <div className="space-y-1">
+        <label className="text-white/90 text-sm font-medium block">
+          Full Name
+        </label>
+        <div className="relative">
+          <User className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-white/50" />
+          <input
+            type="text"
+            name="name"
+            value={formData.name}
+            onChange={handleChange}
+            className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-transparent transition-all duration-300"
+            placeholder="Enter your full name"
+            required
+          />
+        </div>
+      </div>
+
       <div className="space-y-1">
         <label className="text-white/90 text-sm font-medium block">Email</label>
         <div className="relative">

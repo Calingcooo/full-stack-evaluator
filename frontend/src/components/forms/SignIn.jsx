@@ -1,16 +1,20 @@
 import React, { useState } from "react";
-import { Mail, Lock, EyeOff, Eye } from "lucide-react";
+import { User, Mail, Lock, EyeOff, Eye } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 
 const Signin = ({ setCurrentView }) => {
-  const { handleSignin } = useAuth()
+  const { handleSignin } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   return (
-    <form onSubmit={(e) => handleSignin(e, {email, password}, setIsLoading)} className="space-y-6">
+    <form
+      onSubmit={(e) => handleSignin(e, { email, password }, setIsLoading)}
+      className="space-y-6"
+    >
+
       <div className="space-y-1">
         <label className="text-white/90 text-sm font-medium block">Email</label>
         <div className="relative">

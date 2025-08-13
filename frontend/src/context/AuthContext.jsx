@@ -31,7 +31,7 @@ export const AuthProvider = ({ children }) => {
   const handleSignup = async (e, formData, setIsLoading, setCurrentView) => {
     e.preventDefault();
     setIsLoading(true);
-    const { email, password, confirmPassword } = formData;
+    const { name, email, password, confirmPassword } = formData;
     if (password !== confirmPassword) {
       alert("Passwords do not match!");
       setIsLoading(false);
@@ -39,7 +39,7 @@ export const AuthProvider = ({ children }) => {
     }
 
     try {
-      const { data } = await api.post("/auth/signup", { email, password });
+      const { data } = await api.post("/auth/signup", { name, email, password });
 
       alert("Account created successfully!");
       setCurrentView("signin");
