@@ -24,28 +24,28 @@ namespace TaskManager.API
             _context = context;
         }
 
-        [HttpPost("signin")]
-        public async Task<IActionResult> LoginUser([FromBody] CreateUserDto userDto)
-        {
-            var user = await _context.Users
-                .FirstOrDefaultAsync(u => u.Email == userDto.Email);
+        // [HttpPost("signin")]
+        // public async Task<IActionResult> LoginUser([FromBody] CreateUserDto userDto)
+        // {
+        //     var user = await _context.Users
+        //         .FirstOrDefaultAsync(u => u.Email == userDto.Email);
 
-            if (user == null)
-            {
-              return Unauthorized(new { message = "Invalid email or password" });
-            }
+        //     if (user == null)
+        //     {
+        //       return Unauthorized(new { message = "Invalid email or password" });
+        //     }
 
-            var hasher = new PasswordHasher<User>();
-            var result = hasher.VerifyHashedPassword(user, user.PasswordHash, userDto.Password);
+        //     var hasher = new PasswordHasher<User>();
+        //     var result = hasher.VerifyHashedPassword(user, user.PasswordHash, userDto.Password);
 
-            if (result == PasswordVerificationResult.Success)
-            {
-              var token = _jwtService.GenerateToken(user);
-              return Ok(new { token  });
-            }
+        //     if (result == PasswordVerificationResult.Success)
+        //     {
+        //       var token = _jwtService.GenerateToken(user);
+        //       return Ok(new { token  });
+        //     }
             
-            return Unauthorized("Invalid email or password.");
-        }
+        //     return Unauthorized("Invalid email or password.");
+        // }
 
         [HttpPost("signup")]
         public async Task<IActionResult> CreateUser([FromBody] CreateUserDto userDto)
