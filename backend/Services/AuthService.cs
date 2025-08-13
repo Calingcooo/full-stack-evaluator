@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Logging;
 using System.Threading.Tasks;
 using TaskManager.Models;
 using TaskManager.Data;
@@ -16,28 +17,37 @@ namespace TaskManager.Services
     {
         private readonly ApplicationDbContext _context;
         private readonly IPasswordHasher<User> _passwordHasher;
+        private readonly ILogger<IAuthService> _logger;
 
         public AuthService(
             ApplicationDbContext context, 
-            IPasswordHasher<User> passwordHasher)
+            IPasswordHasher<User> passwordHasher,
+            ILogger<IAuthService> logger)
         {
             _context = context;
             _passwordHasher = passwordHasher;
+            _logger = logger;
         }
 
         public async Task<User> ValidateUser(string email, string password)
         {
             try
             {
+                if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password))
+                    return null;
+
                 var user = await _context.Users
                     .FirstOrDefaultAsync(u => u.Email == email);
-                
-                return user != null && 
-                    _passwordHasher.VerifyHashedPassword(user, user.PasswordHash, password) 
-                    == PasswordVerificationResult.Success ? user : null;
+
+                if (user == null)
+                    return null;
+
+                var result = _passwordHasher.VerifyHashedPassword(user, user.PasswordHash, password);
+                return result == PasswordVerificationResult.Success ? user : null;
             }
-            catch
+            catch (Exception ex)
             {
+                _logger.LogInformation(ex, "Unexpected error during login for email {Email} ", email);
                 return null;
             }
         }

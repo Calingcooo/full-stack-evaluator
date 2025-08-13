@@ -58,6 +58,8 @@ namespace TaskManager.API
         {
             var user = await _authService.ValidateUser(loginDto.Email, loginDto.Password);
 
+            _logger.LogInformation("found user: ", user);
+
             if (user == null)
             {
                 return Unauthorized(new { message = "Invalid email or password" });
