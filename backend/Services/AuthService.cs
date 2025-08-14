@@ -34,21 +34,21 @@ namespace TaskManager.Services
             try
             {
                 if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password))
-                    return null;
+                    return null!;
 
                 var user = await _context.Users
                     .FirstOrDefaultAsync(u => u.Email == email);
 
                 if (user == null)
-                    return null;
+                    return null!;
 
                 var result = _passwordHasher.VerifyHashedPassword(user, user.PasswordHash, password);
-                return result == PasswordVerificationResult.Success ? user : null;
+                return result == PasswordVerificationResult.Success ? user : null!;
             }
             catch (Exception ex)
             {
                 _logger.LogInformation(ex, "Unexpected error during login for email {Email} ", email);
-                return null;
+                return null!;
             }
         }
 
@@ -60,5 +60,7 @@ namespace TaskManager.Services
             var tempUser = new User();
             return _passwordHasher.HashPassword(tempUser, password);
         }
+
+        
     }
 }

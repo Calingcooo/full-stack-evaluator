@@ -58,7 +58,7 @@ namespace TaskManager.API
         {
             var user = await _authService.ValidateUser(loginDto.Email, loginDto.Password);
 
-            _logger.LogInformation("found user: ", user);
+            _logger.LogInformation("found user: {@User}", user);
 
             if (user == null)
             {
