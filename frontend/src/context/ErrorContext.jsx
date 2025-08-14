@@ -4,9 +4,11 @@ export const ErrorContext = createContext(undefined);
 
 export const ErrorProvider = ({ children }) => {
   const [loginError, setLoginError] = useState(null);
+  const [registerError, setRegisterError] = useState(null);
   const [globalError, setGlobalError] = useState(null);
 
   const clearLoginError = () => setLoginError(null);
+  const clearRegisterError = () => setRegisterError(null);
   const clearGlobalError = () => setGlobalError(null);
 
   return (
@@ -14,9 +16,12 @@ export const ErrorProvider = ({ children }) => {
       value={{
         loginError,
         setLoginError,
+        registerError,
+        setRegisterError,
         globalError,
         setGlobalError,
         clearLoginError,
+        clearRegisterError,
         clearGlobalError,
       }}
     >

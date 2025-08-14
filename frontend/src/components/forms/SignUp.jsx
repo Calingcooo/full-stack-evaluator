@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { User, Mail, Lock, EyeOff, Eye } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
+import { useError } from "../../context/ErrorContext";
 
 const SignUp = ({ setCurrentView }) => {
   const { handleSignup } = useAuth();
+  const { registerError, setRegisterError, clearRegisterError, clearGlobalError } = useError();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [formData, setFormData] = useState({
@@ -21,9 +23,24 @@ const SignUp = ({ setCurrentView }) => {
     });
   };
 
-  if (formData.password !== formData.confirmPassword) {
-    console.log("password do not match");
-  }
+  useEffect(() => {
+    if (formData.password && formData.confirmPassword) {
+      if (formData.password !== formData.confirmPassword) {
+        setRegisterError((prev) => ({
+          ...prev,
+          password: "Passwords do not match",
+        }));
+      } else {
+        setRegisterError((prev) => ({
+          ...prev,
+          password: false,
+        }));
+      }
+    }
+
+    clearRegisterError(null)
+    clearGlobalError(null)
+  }, [formData.password, formData.confirmPassword]);
 
   return (
     <div className="space-y-6">
@@ -54,11 +71,14 @@ const SignUp = ({ setCurrentView }) => {
             name="email"
             value={formData.email}
             onChange={handleChange}
-            className="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-transparent transition-all duration-300"
+            className={`w-full pl-10 pr-12 py-3 bg-white/5 border rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-white placeholder-white/50  transition-all duration-300 ${registerError?.email ? "border-red-500 focus:ring-red-500 focus:border-red-500" : "border-white/20 focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-transparent"}`}            
             placeholder="Enter your email"
             required
           />
         </div>
+        {registerError?.email && (
+          <p className="text-red-500">{registerError?.email}</p>
+        )}
       </div>
 
       <div className="space-y-1">
@@ -72,7 +92,7 @@ const SignUp = ({ setCurrentView }) => {
             name="password"
             value={formData.password}
             onChange={handleChange}
-            className="w-full pl-10 pr-12 py-3 bg-white/5 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-transparent transition-all duration-300"
+            className={`w-full pl-10 pr-12 py-3 bg-white/5 border rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-white placeholder-white/50  transition-all duration-300 ${registerError?.password ? "border-red-500 focus:ring-red-500 focus:border-red-500" : "border-white/20 focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-transparent"}`}
             placeholder="Create a password"
             required
           />
@@ -88,6 +108,11 @@ const SignUp = ({ setCurrentView }) => {
             )}
           </button>
         </div>
+
+        {registerError?.password && (
+          <p className="text-red-500">{registerError?.password}</p>
+        )}
+
       </div>
 
       <div className="space-y-1">
@@ -101,7 +126,7 @@ const SignUp = ({ setCurrentView }) => {
             name="confirmPassword"
             value={formData.confirmPassword}
             onChange={handleChange}
-            className="w-full pl-10 pr-12 py-3 bg-white/5 border border-white/20 rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-green-400 focus:border-transparent transition-all duration-300"
+            className={`w-full pl-10 pr-12 py-3 bg-white/5 border rounded-lg focus:outline-none focus:ring-2 focus:border-transparent text-white placeholder-white/50  transition-all duration-300 ${registerError?.password ? "border-red-500 focus:ring-red-500 focus:border-red-500" : "border-white/20 focus:outline-none  focus:ring-2 focus:ring-green-400 focus:border-transparent"}`}
             placeholder="Confirm your password"
             required
           />
@@ -137,8 +162,8 @@ const SignUp = ({ setCurrentView }) => {
 
       <button
         onClick={(e) => handleSignup(e, formData, setIsLoading, setCurrentView)}
-        disabled={isLoading}
-        className="w-full py-3 px-4 bg-gradient-to-r from-green-500 to-blue-600 text-white font-semibold rounded-lg shadow-lg hover:from-green-600 hover:to-blue-700 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-offset-2 focus:ring-offset-transparent transition-all duration-300 transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+        disabled={isLoading || registerError?.email || registerError?.password}
+        className="w-full py-3 px-4 bg-gradient-to-r from-green-500 to-blue-600 text-white font-semibold rounded-lg shadow-lg hover:from-green-600 hover:to-blue-700 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-offset-2 focus:ring-offset-transparent transition-all duration-300 transform hover:scale-[1.02] cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
       >
         {isLoading ? (
           <div className="flex items-center justify-center">

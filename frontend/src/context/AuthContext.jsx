@@ -5,8 +5,14 @@ import api from "../api/axios";
 export const AuthContext = createContext(undefined);
 
 export const AuthProvider = ({ children }) => {
-  const { setLoginError, setGlobalError, clearLoginError, clearGlobalError } =
-    useError();
+  const {
+    setLoginError,
+    setRegisterError,
+    setGlobalError,
+    clearLoginError,
+    clearRegisterError,
+    clearGlobalError,
+  } = useError();
   const [user, setUser] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
@@ -27,30 +33,29 @@ export const AuthProvider = ({ children }) => {
     try {
       const { data } = await api.post("/auth/signin", { email, password });
 
-      console.log(data);
-
       alert("logged in success!");
       setLoginError(null);
     } catch (error) {
       if (error.response) {
         // Backend responded with an error status (e.g., 400, 401)
-        const backendMessage = error.response.data?.message || "Unknown server error";
+        const backendMessage =
+          error.response.data?.message || "Unknown server error";
 
         // Handle both unauthorized, bad request error and server error
         if (error.response.status === 401 || error.response.status === 400) {
           setLoginError(backendMessage);
         } else {
           setGlobalError(backendMessage);
-          clearLoginError(null)
+          clearLoginError(null);
         }
       } else if (error.request) {
         // Request made but no response received
         setGlobalError("No response from server. Please check your connection.");
-        clearLoginError(null)
+        clearLoginError(null);
       } else {
         // Something else triggered the error
         setGlobalError("An unexpected error occurred.");
-        clearLoginError(null)
+        clearLoginError(null);
       }
     } finally {
       setIsLoading(false);
@@ -60,14 +65,10 @@ export const AuthProvider = ({ children }) => {
   const handleSignup = async (e, formData, setIsLoading, setCurrentView) => {
     e.preventDefault();
     setIsLoading(true);
+    clearRegisterError(false);
+    clearGlobalError(null);
 
-    const { name, email, password, confirmPassword } = formData;
-
-    if (password !== confirmPassword) {
-      alert("Passwords do not match!");
-      setIsLoading(false);
-      return;
-    }
+    const { name, email, password } = formData;
 
     try {
       const { data } = await api.post("/auth/signup", {
@@ -77,12 +78,35 @@ export const AuthProvider = ({ children }) => {
       });
 
       alert("Account created successfully!");
-      console.log(data);
       setCurrentView("signin");
-      setAuthError(false);
     } catch (error) {
-      console.error(error);
-      setAuthError(true);
+      if (error.response) {
+        // Backend responded with an error status (e.g., 400)
+        const backendMessage = error.response.data?.message || "Unknown server error";
+
+        console.log(error.response);
+
+        // Handle both unauthorized, bad request error and server error
+        if (error.response.status === 400) {
+          setRegisterError((prev) => ({
+            ...prev,
+            email: backendMessage,
+          }));
+        } else {
+          setGlobalError(backendMessage);
+          clearRegisterError(null);
+        }
+      } else if (error.request) {
+        // Request made but no response received
+        setGlobalError(
+          "No response from server. Please check your connection."
+        );
+        clearRegisterError(null);
+      } else {
+        // Something else triggered the error
+        setGlobalError("An unexpected error occurred.");
+        clearRegisterError(null);
+      }
     } finally {
       setIsLoading(false);
     }
