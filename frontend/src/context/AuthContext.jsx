@@ -5,16 +5,16 @@ import api from "../api/axios";
 export const AuthContext = createContext(undefined);
 
 export const AuthProvider = ({ children }) => {
-  const { setLoginError, setGlobalError, clearLoginError, clearGlobalError } = useError()
+  const { setLoginError, setGlobalError, clearLoginError, clearGlobalError } =
+    useError();
   const [user, setUser] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [authError, setAuthError] = useState(false);
 
   const handleSignin = async (e, formData, setIsLoading) => {
     e.preventDefault();
     setIsLoading(true);
-    clearLoginError(null)
-    clearGlobalError(null)
+    clearLoginError(null);
+    clearGlobalError(null);
 
     const { email, password } = formData;
 
@@ -29,11 +29,29 @@ export const AuthProvider = ({ children }) => {
 
       console.log(data);
 
-      alert("logged in success!")
-      setLoginError(null)
+      alert("logged in success!");
+      setLoginError(null);
     } catch (error) {
-      console.error(error);
-      setGlobalError("Something went wrong, please try again.")
+      if (error.response) {
+        // Backend responded with an error status (e.g., 400, 401)
+        const backendMessage = error.response.data?.message || "Unknown server error";
+
+        // Handle both unauthorized, bad request error and server error
+        if (error.response.status === 401 || error.response.status === 400) {
+          setLoginError(backendMessage);
+        } else {
+          setGlobalError(backendMessage);
+          clearLoginError(null)
+        }
+      } else if (error.request) {
+        // Request made but no response received
+        setGlobalError("No response from server. Please check your connection.");
+        clearLoginError(null)
+      } else {
+        // Something else triggered the error
+        setGlobalError("An unexpected error occurred.");
+        clearLoginError(null)
+      }
     } finally {
       setIsLoading(false);
     }
@@ -52,10 +70,14 @@ export const AuthProvider = ({ children }) => {
     }
 
     try {
-      const { data } = await api.post("/auth/signup", { name, email, password });
+      const { data } = await api.post("/auth/signup", {
+        name,
+        email,
+        password,
+      });
 
       alert("Account created successfully!");
-      console.log(data)
+      console.log(data);
       setCurrentView("signin");
       setAuthError(false);
     } catch (error) {
@@ -68,7 +90,7 @@ export const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider
-      value={{ user, isAuthenticated, authError, handleSignin, handleSignup }}
+      value={{ user, isAuthenticated, handleSignin, handleSignup }}
     >
       {children}
     </AuthContext.Provider>

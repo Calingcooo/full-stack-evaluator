@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 import { Mail, Lock, EyeOff, Eye } from "lucide-react";
+import { useError } from "../../context/ErrorContext";
 import { useAuth } from "../../context/AuthContext";
 
 const Signin = ({ setCurrentView }) => {
-  const { authError, handleSignin } = useAuth();
+  const { handleSignin } = useAuth();
+  const { loginError, globalError } = useError();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -23,7 +25,7 @@ const Signin = ({ setCurrentView }) => {
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className={`w-full pl-10 pr-4 py-3 bg-white/5 border rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-300 ${authError ? "border-red-500 focus:ring-red-500 focus:border-red-500" : "focus:outline-none border-white/20 focus:ring-2 focus:ring-blue-400 focus:border-transparent"}`}
+            className={`w-full pl-10 pr-4 py-3 bg-white/5 border rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-300 ${loginError ? "border-red-500 focus:ring-red-500 focus:border-red-500" : "focus:outline-none border-white/20 focus:ring-2 focus:ring-blue-400 focus:border-transparent"}`}
             placeholder="Enter your email"
             required
           />
@@ -40,7 +42,7 @@ const Signin = ({ setCurrentView }) => {
             type={showPassword ? "text" : "password"}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className={`w-full pl-10 pr-4 py-3 bg-white/5 border rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-300 ${authError ? "border-red-500 focus:ring-red-500 focus:border-red-500" : "focus:outline-none border-white/20 focus:ring-2 focus:ring-blue-400 focus:border-transparent"}`}
+            className={`w-full pl-10 pr-4 py-3 bg-white/5 border rounded-lg text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-300 ${loginError ? "border-red-500 focus:ring-red-500 focus:border-red-500" : "focus:outline-none border-white/20 focus:ring-2 focus:ring-blue-400 focus:border-transparent"}`}
             placeholder="Enter your password"
             required
           />
@@ -58,9 +60,14 @@ const Signin = ({ setCurrentView }) => {
         </div>
       </div>
 
-      <div className={`flex items-center text-sm ${authError ? "justify-between" : "justify-end"}`}>
-        {authError && (
-          <p className="text-red-500">Invalid email or password</p>
+      <div className={`flex items-center text-sm ${loginError || globalError ? "justify-between" : "justify-end"}`}>
+        
+        {loginError && (
+          <p className="text-red-500">{loginError}</p>
+        )}
+
+        {globalError && (
+          <p className="text-red-500">{globalError}</p>
         )}
 
         <a
