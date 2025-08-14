@@ -30,10 +30,13 @@ namespace TaskManager.API
         [HttpPost("signup")]
         public async Task<IActionResult> CreateUser([FromBody] RegisterRequest request)
         {
-            _logger.LogInformation("Registering new user: {Name}, {Email}", request.Name, request.Email);
+            // Validate register input
+            var existingUser = await _authService.ValidateRegisterRequest(request.Name, request.Email, request.Password);
+            
+            _logger.LogInformation("Found user with Id: {Id} and Email: {Email}", existingUser.Id, existingUser.Email);
 
             // Check if email exists
-            if (await _context.Users.AnyAsync(u => u.Email == request.Email))
+            if (existingUser != null)
             {
                 return BadRequest(new { message = "Email already exists" });
             }
@@ -56,7 +59,7 @@ namespace TaskManager.API
         [HttpPost("signin")]
         public async Task<IActionResult> LoginUser([FromBody] LoginRequest loginDto)
         {
-            var user = await _authService.ValidateUser(loginDto.Email, loginDto.Password);
+            var user = await _authService.ValidateLoginRequest(loginDto.Email, loginDto.Password);
 
             _logger.LogInformation("found user: {@User}", user);
 

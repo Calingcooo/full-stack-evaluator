@@ -9,7 +9,8 @@ namespace TaskManager.Services
 {
     public interface IAuthService
     {
-        Task<User> ValidateUser(string email, string password);
+        Task<User> ValidateLoginRequest(string email, string password);
+        Task<User> ValidateRegisterRequest(string name, string email, string password);
         string HashPassword(string password);
     }
 
@@ -29,7 +30,7 @@ namespace TaskManager.Services
             _logger = logger;
         }
 
-        public async Task<User> ValidateUser(string email, string password)
+        public async Task<User> ValidateLoginRequest(string email, string password)
         {
             try
             {
@@ -48,6 +49,29 @@ namespace TaskManager.Services
             catch (Exception ex)
             {
                 _logger.LogInformation(ex, "Unexpected error during login for email {Email} ", email);
+                return null!;
+            }
+        }
+
+        public async Task<User> ValidateRegisterRequest(string name, string email, string password)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(name) || string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password))
+                    return null!;
+
+                var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
+
+                if (user != null)
+                {
+                    return user;
+                }
+
+                return null!;
+            }
+            catch (Exception ex)
+            {
+                 _logger.LogInformation(ex, "Unexpected error user creation: {error}", ex);
                 return null!;
             }
         }
