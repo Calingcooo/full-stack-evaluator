@@ -21,6 +21,10 @@ const SignUp = ({ setCurrentView }) => {
     });
   };
 
+  if (formData.password !== formData.confirmPassword) {
+    console.log("password do not match");
+  }
+
   return (
     <div className="space-y-6">
       <div className="space-y-1">

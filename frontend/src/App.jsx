@@ -1,16 +1,19 @@
 import { createBrowserRouter, RouterProvider } from "react-router";
+import { ErrorProvider } from "./context/ErrorContext";
 import { AuthProvider } from "./context/AuthContext";
 import AuthGuard from "./guards/AuthGuard";
 import Login from "./modules/login/Login";
-import Dashboard from "./modules/task_dashboard/Dashboard"
+import Dashboard from "./modules/task_dashboard/Dashboard";
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: (
-      <AuthProvider>
-        <AuthGuard />
-      </AuthProvider>
+      <ErrorProvider>
+        <AuthProvider>
+          <AuthGuard />
+        </AuthProvider>
+      </ErrorProvider>
     ),
     children: [
       {

@@ -1,32 +1,39 @@
 import { createContext, useState, useContext } from "react";
+import { useError } from "./ErrorContext";
 import api from "../api/axios";
 
 export const AuthContext = createContext(undefined);
 
 export const AuthProvider = ({ children }) => {
+  const { setLoginError, setGlobalError, clearLoginError, clearGlobalError } = useError()
   const [user, setUser] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [authError, setAuthError] = useState(true);
+  const [authError, setAuthError] = useState(false);
 
   const handleSignin = async (e, formData, setIsLoading) => {
     e.preventDefault();
     setIsLoading(true);
-    setAuthError(false)
+    clearLoginError(null)
+    clearGlobalError(null)
+
     const { email, password } = formData;
+
     if (email.trim() === "" || password.trim() === "") {
       alert("Email and password field is required");
       setIsLoading(false);
       return;
     }
+
     try {
       const { data } = await api.post("/auth/signin", { email, password });
 
       console.log(data);
+
       alert("logged in success!")
-      setAuthError(false)
+      setLoginError(null)
     } catch (error) {
       console.error(error);
-      setAuthError(true)
+      setGlobalError("Something went wrong, please try again.")
     } finally {
       setIsLoading(false);
     }
@@ -35,7 +42,9 @@ export const AuthProvider = ({ children }) => {
   const handleSignup = async (e, formData, setIsLoading, setCurrentView) => {
     e.preventDefault();
     setIsLoading(true);
+
     const { name, email, password, confirmPassword } = formData;
+
     if (password !== confirmPassword) {
       alert("Passwords do not match!");
       setIsLoading(false);
